@@ -47,10 +47,11 @@
 ```
 #### To check the log history that has been commit
 ````
-#### To check the History
 # git log 
-#### for one line commit 
+  ## To check the History
+
 # git log --oneline
+  ## for one line commit 
 ````
 #### To check status
 ````
