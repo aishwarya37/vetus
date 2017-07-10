@@ -38,3 +38,17 @@
 # git merge branch1
 # git push origin master
 ```
+#### To check the History
+```
+#### To check the log history that has been commit
+# git log 
+#### for one line commit 
+# git log --oneline
+
+
+#git status 
+  ## shows the status of your repository
+#git status -s 
+  ## tells you what has been modified in shorcut
+
+
