@@ -38,17 +38,28 @@
 # git merge branch1
 # git push origin master
 ```
-#### To check the History
+#### To delete a branch in local and remote 
+````
+####Delete Local Branch
+# git branch -d branch_name
+#### Delete Remote Branch
+# git push origin --delete <branch_name>
 ```
 #### To check the log history that has been commit
+````
+#### To check the History
 # git log 
 #### for one line commit 
 # git log --oneline
-
-
+````
+#### To check status
+````
 #git status 
   ## shows the status of your repository
 #git status -s 
   ## tells you what has been modified in shorcut
+````
+
+  
 
 
