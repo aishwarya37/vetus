@@ -45,21 +45,22 @@
 #### Delete Remote Branch
 # git push origin --delete <branch_name>
 ```
+
 #### To check the log history that has been commit
-````
+```
 # git log 
   ## To check the History
 
 # git log --oneline
   ## for one line commit 
-````
+```
 #### To check status
-````
+```
 #git status 
   ## shows the status of your repository
 #git status -s 
   ## tells you what has been modified in shorcut
-````
+```
 
   
 
