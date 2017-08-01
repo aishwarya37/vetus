@@ -1,0 +1,145 @@
+Installation SSL Certificate on RHEL/CentOS 7/6 to Secure Apache
+SSL is a web protocol that is used to send trafic between server and client in a secured manner. It provides secure and encrypted transactions between the browser and websites. This protocol generates a certificate which the end user has to authenticate. Installation of SSL to initiate secure session is explained in this tutorial.
+ 
+Install httpd package
+To Install httpd package, run the following command.
+[root@linuxhelp ~]# yum install httpd
+Loaded plugins: fastestmirror, langpacks
+Loading mirror speeds from cached hostfile
+ * base: centos.webwerks.com
+ * extras: centos.webwerks.com
+ * updates: centos.webwerks.com
+Resolving Dependencies
+--> Running transaction check
+---> Package httpd.x86_64 0:2.4.6-40.el7.centos will be installed
+.
+.
+.
+Installed:
+  httpd.x86_64 0:2.4.6-40.el7.centos                                                    
+Dependency Installed:
+  apr.x86_64 0:1.4.8-3.el7                         apr-util.x86_64 0:1.5.2-6.el7        
+  httpd-tools.x86_64 0:2.4.6-40.el7.centos         mailcap.noarch 0:2.1.41-2.el7        
+Complete!
+
+
+And install the package for secure web server.
+[root@linuxhelp ~]# yum install mod_ssl
+Loaded plugins: fastestmirror, langpacks
+Loading mirror speeds from cached hostfile
+ * base: centos.webwerks.com
+ * extras: centos.webwerks.com
+ * updates: centos.webwerks.com
+Resolving Dependencies
+--> Running transaction check
+---> Package mod_ssl.x86_64 1:2.4.6-40.el7.centos will be installed
+.
+.
+.
+Installed:
+  mod_ssl.x86_64 1:2.4.6-40.el7.centos                                                  
+Dependency Updated:
+  openssl.x86_64 1:1.0.1e-51.el7_2.4       openssl-libs.x86_64 1:1.0.1e-51.el7_2.4      
+Complete!
+
+
+To install openssl package for self-signed certificate use the following command.
+[root@linuxhelp ~]# yum install openssl
+Loaded plugins: aliases, changelog, fastestmirror, kabi, presto, refresh-packagekit, security, tmprepo, verify, versionlock
+Loading support for CentOS kernel ABI
+Setting up Install Process
+Loading mirror speeds from cached hostfile
+ * base: ftp.iitm.ac.in
+ * elrepo: mirrors.thzhost.com
+ * epel: ftp.cuhk.edu.hk
+ * extras: ftp.iitm.ac.in
+ * nux-dextop: li.nux.ro
+.
+.
+.
+  Verifying  : openssl-devel-1.0.1e-42.el6_7.4.x86_64         1/4                                                                                                                                                                    
+  Verifying  : openssl-1.0.1e-42.el6_7.4.x86_64               2/4                                                                                                                                                                                          
+  Verifying  : openssl-1.0.1e-42.el6_7.2.x86_64               3/4                                                                                                                                                                                          
+  Verifying  : openssl-devel-1.0.1e-42.el6_7.2.x86_64         4/4                                                                                                                                                                                 
+Updated:
+  openssl.x86_64 0:1.0.1e-42.el6_7.4                                                                                                                                                                                                         
+Dependency Updated:
+  openssl-devel.x86_64 0:1.0.1e-42.el6_7.4                                                                                                                                                                                                   
+Complete!
+Generate a private key with 2048 bit encryption as follows.
+[root@linuxhelp ~]# openssl genrsa -out ca.key 2048
+Generating RSA private key, 2048 bit long modulus
+.....................................................+++
+...................................................................................+++
+e is 65537 (0x10001)
+
+Then generate the certificate signing request (CSR) by using the following command.
+[root@linuxhelp ~]# openssl req -new -key ca.key -out ca.csr
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+.
+.
+.
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+
+Generate a self-signed certificate of X509 type which remains active for 365 days.
+[root@linuxhelp ~]# openssl x509 -req -days 365 -in ca.csr -signkey ca.key -out ca.crt
+Signature ok
+subject=/C=IN/L=Default City/O=Default Company Ltd
+Getting Private key
+After generating the certificates, copy the files to the necessary directory.
+
+
+[root@linuxhelp ~]# cp ca.crt /etc/pki/tls/certs
+[root@linuxhelp ~]# cp ca.key /etc/pki/tls/private/
+[root@linuxhelp ~]# cp ca.csr /etc/pki/tls/private
+Now edit the secure web server configuration file and add the below lines into it.
+[root@linuxhelp ~]# vim /etc/httpd/conf.d/ssl.conf
+SSLCertificateFile /etc/pki/tls/certs/ca.crt
+SSLCertificateKeyFile /etc/pki/tls/private/ca.key
+Verify the Apache configuration file.
+[root@linuxhelp ~]# httpd -t
+Syntax OK
+Now open the apache web server configuration file using your favourite editor.
+[root@linuxhelp ~]# vim /etc/httpd/conf/httpd.conf
+Append the following lines into it.
+<VirtualHost *:443>
+SSLEngine on
+SSLCertificateFile /etc/pki/tls/certs/ca.crt
+SSLCertificateKeyFile /etc/pki/tls/private/ca.key
+servername www.linuxhelp1.com
+Documentroot /var/www/html
+</VirtualHost>
+And then Verify the Apache configuration file.
+[root@linuxhelp ~]# httpd -t
+Syntax OK
+Add the service and the port number to the firewall
+[root@linuxhelp ~]# firewall-cmd --permanent --add-service=https
+success
+ 
+[root@linuxhelp ~]# firewall-cmd --permanent --add-port=443/tcp
+success
+ 
+[root@linuxhelp ~]# firewall-cmd --reload
+Success
+Restart and enable the service for the web server
+[root@linuxhelp ~]# systemctl restart httpd.service
+[root@linuxhelp ~]# systemctl enable httpd.service
+ln -s '/usr/lib/systemd/system/httpd.service' '/etc/systemd/system/multi-user.target.wants/httpd.service'
+Now open the browser and type the website you have configured.
+ssl
+Untrusted connection page appers. Click 'I Understand the risk'
+untrusted_connection
+Then click add exception.
+
+add_exception
+Click Confirm security Exception.
+confirm_security
+Website that we have configured with SSL certificate.
+configure_ssl
