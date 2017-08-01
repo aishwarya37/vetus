@@ -27,6 +27,7 @@ Complete!
 And install the package for secure web server.
 ---
 [root@linuxhelp ~]# yum install mod_ssl
+###
 Loaded plugins: fastestmirror, langpacks
 Loading mirror speeds from cached hostfile
  * base: centos.webwerks.com
@@ -46,7 +47,9 @@ Complete!
 
 
 To install openssl package for self-signed certificate use the following command.
+---
 [root@linuxhelp ~]# yum install openssl
+###
 Loaded plugins: aliases, changelog, fastestmirror, kabi, presto, refresh-packagekit, security, tmprepo, verify, versionlock
 Loading support for CentOS kernel ABI
 Setting up Install Process
