@@ -4,6 +4,7 @@ SSL is a web protocol that is used to send trafic between server and client in a
 Install httpd package
 To Install httpd package, run the following command.
 [root@linuxhelp ~]# yum install httpd
+---
 Loaded plugins: fastestmirror, langpacks
 Loading mirror speeds from cached hostfile
  * base: centos.webwerks.com
@@ -24,6 +25,7 @@ Complete!
 
 
 And install the package for secure web server.
+---
 [root@linuxhelp ~]# yum install mod_ssl
 Loaded plugins: fastestmirror, langpacks
 Loading mirror speeds from cached hostfile
